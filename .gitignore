@@ -1,4 +1,6 @@
 *.o
 .vscode
 build
+windows_build
+zebra
 othello
