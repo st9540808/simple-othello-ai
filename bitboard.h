@@ -57,6 +57,41 @@ inline Bitboard operator|(Bitboard b, square s) {
     return b | (1ull << static_cast<int>(s));
 }
 
-void print_board(Bitboard b);
+inline Bitboard operator&=(Bitboard& b, square s) {
+    return b = b & s;
+}
+
+inline Bitboard operator|=(Bitboard& b, square s) {
+    return b = b | s;
+}
+
+inline square operator++(square& s, int)
+{
+    square tmp = s;
+    s = static_cast<square>(s + 1);
+    return tmp;
+}
+
+inline color operator^(color c, int i)
+{
+    return static_cast<color>(static_cast<int>(c) ^ i);
+}
+
+inline color operator^=(color& c, int i)
+{
+    return c = c ^ i;
+}
+
+inline int popcount(Bitboard b)
+{
+    return __builtin_popcountll(b);
+}
+
+void print_bitboard(Bitboard b);
+
+constexpr int num_dirs = 8;
+Bitboard shift(Bitboard, int);
+Bitboard generate_moves(Bitboard self, Bitboard opponent);
+void resolve_move(Bitboard* self, Bitboard* opponent, square s);
 
 #endif
