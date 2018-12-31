@@ -6,7 +6,7 @@
 int main(int argc, char const *argv[])
 {
     const int play_count = 1000;
-    int win_count;
+    int win_count = 0;
 
     color player = BLACK;
     for (int i = 0; i < 500; i++) {

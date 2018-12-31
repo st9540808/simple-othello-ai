@@ -297,6 +297,8 @@ square rand_generate_smart(const Othello node, const color player)
     min = *std::min_element(std::begin(weights), std::begin(weights)+num_moves);
     for (int i = 0; i < num_moves; i++)
         weights[i] += -std::min(min, 0) + 1;
+    for (int i = 0; i < num_moves; i++)
+        weights[i] *= 2;
 
     std::discrete_distribution<> d(std::begin(weights), std::begin(weights)+num_moves);
     // for (int i = 0; i < num_moves; i++)
