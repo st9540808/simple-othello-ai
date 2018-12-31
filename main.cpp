@@ -42,6 +42,7 @@ int main(int argc, char const *argv[])
         for (int d = -1; d <= 1; d++)
         for (int e = -1; e <= 1; e++) {
             double prob = test(a, b, c, d, e);
+            std::printf("win probability: %f (%d, %d, %d, %d, %d)\n", prob, a, b, c, d, e);
             if (prob < min_prob) {
                 prob = min_prob;
                 _a = a;
@@ -50,7 +51,6 @@ int main(int argc, char const *argv[])
                 _d = d;
                 _e = e;
             }
-            std::printf("win probability: %f (%d, %d, %d, %d, %d)\n", prob, a, b, c, d, e);
         }
 
         set_init(_a, _b, _c, _d, _e);
