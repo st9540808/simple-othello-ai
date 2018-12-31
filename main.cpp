@@ -1,13 +1,29 @@
 #include <iostream>
+#include <random>
 #include "othello.h"
 #include "search.h"
 
 int main(int argc, char const *argv[])
 {
-    Othello othello;
-    // othello.play();
-    // print_bitboard(1ull << alphabeta(othello, 12, BLACK));
-    othello.ai_self_play();
+    const int play_count = 1000;
+    int win_count;
+
+
+    color player = BLACK;
+    for (int i = 0; i < 500; i++) {
+        Othello othello;
+        if (othello.ai_play_with_rand(player))
+            win_count++;
+    }
+
+    player = WHITE;
+    for (int i = 0; i < 500; i++) {
+        Othello othello;
+        if (othello.ai_play_with_rand(player))
+            win_count++;
+    }
+
+    std::printf("win probability: %f", (float) win_count / play_count);
 
     return 0;
 }

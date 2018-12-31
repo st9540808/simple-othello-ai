@@ -1,9 +1,17 @@
 #include "search.h"
 #include <limits>
+#include <random>
 
-int eval(Bitboard self, Bitboard opponent, Bitboard self_moves, Bitboard opp_moves)
+static color eval_player; // player to evaluate
+
+int eval(Othello game_state)
 {
     static constexpr Bitboard corners = 0x8100000000000081ULL;
+
+    Bitboard self = game_state.get_board(eval_player);
+    Bitboard opponent = game_state.get_board(eval_player ^ 1);
+    Bitboard self_moves = game_state.generate_moves_for(eval_player);
+    Bitboard opp_moves = game_state.generate_moves_for(eval_player ^ 1);
     int val;
 
     if (self_moves == 0 && opp_moves == 0) {
@@ -22,6 +30,7 @@ int eval(Bitboard self, Bitboard opponent, Bitboard self_moves, Bitboard opp_mov
 square alphabeta(const Othello node, int depth, const color player)
 {
     square best_move;
+    eval_player = player;
     int best_score = alphabeta(
         node, depth,
         std::numeric_limits<int>::min(), std::numeric_limits<int>::max(),
@@ -36,23 +45,29 @@ int alphabeta(const Othello node, int depth, int alpha, int beta,
 {
     Bitboard moves = node.generate_moves_for(player);
     Bitboard opp_moves = node.generate_moves_for(player ^ 1);
+    const int num_moves = popcount(moves);
+    square moves_arr[64];
 
-    if (depth == 0 || (moves == 0 && opp_moves == 0)) {
-        return eval(node.get_board(player), node.get_board(player ^ 1), 
-                    moves, opp_moves);
-    };
-    if (moves == 0) {
+    // leaf
+    if (depth == 0 || (!moves && !opp_moves))
+        return eval(node);
+    
+    // pass
+    if (!moves && opp_moves) {
         return alphabeta(node, depth-1, alpha, beta,
                          player^1, maximizingPlayer^1, nullptr);
     }
 
     if (maximizingPlayer) {
-        std::vector<square> moves_arr = Othello::convert_moves_to_vector(moves);
         int max_score = std::numeric_limits<int>::min();
         int score;
+
+        Othello::convert_moves_to_arr(moves, moves_arr, num_moves);
         
-        for (square move : moves_arr) {
+        for (int i = 0; i < num_moves; i++) {
+            square move = moves_arr[i];
             Othello child = node;
+
             child.make_move(player, move);
             score = alphabeta(child, depth-1, alpha, beta, player^1, false, nullptr);
             if (score > max_score) {
@@ -65,12 +80,15 @@ int alphabeta(const Othello node, int depth, int alpha, int beta,
         }
         return max_score;
     } else {
-        std::vector<square> moves_arr = Othello::convert_moves_to_vector(moves);
         int min_score = std::numeric_limits<int>::max();
         int score;
 
-        for (square move : moves_arr) {
+        Othello::convert_moves_to_arr(moves, moves_arr, num_moves);
+
+        for (int i = 0; i < num_moves; i++) {
+            square move = moves_arr[i];
             Othello child = node;
+
             child.make_move(player, move);
             score = alphabeta(child, depth-1, alpha, beta, player^1, true, nullptr);
             if (score < min_score) {
@@ -83,4 +101,19 @@ int alphabeta(const Othello node, int depth, int alpha, int beta,
         }
         return min_score;
     }
+}
+
+square rand_generate(const Othello node, const color player)
+{
+    static std::mt19937 generator(std::random_device{}());
+    Bitboard moves = node.generate_moves_for(player);
+    const int num_moves = popcount(moves);
+    square moves_arr[64];
+
+    Othello::convert_moves_to_arr(moves, moves_arr, num_moves);
+
+    assert(popcount(moves) != 0);
+    std::uniform_int_distribution<> dist(0, num_moves-1);
+
+    return moves_arr[dist(generator)];
 }
