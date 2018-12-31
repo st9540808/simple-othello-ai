@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <mutex>
 
-static color eval_player; // player to evaluate
+
 static constexpr Bitboard corners = 0x8100000000000081ULL;
 static constexpr Bitboard x_squares = make_bitboard(SQ_B2) | SQ_G2 | SQ_B7 | SQ_G7;
 static constexpr Bitboard c_squares =
@@ -15,10 +15,9 @@ static constexpr Bitboard b_squares =
       make_bitboard(SQ_D1) | SQ_E1 | SQ_A4 | SQ_H4 | SQ_A5 | SQ_H5 | SQ_D8 | SQ_E8;
 static constexpr Bitboard others = ~(corners | x_squares | a_squares | b_squares);
 
-
-
-int a_init = 31, b_init = -16, c_init = -7, d_init = 4, e_init = 3;
-int a = 31, b = -16, c = -7, d = 4, e = 3;
+eval2_t weak_eval = weak_eval_for_player;
+eval2_t mobility_eval = mobility_eval_for_player;
+eval2_t mobility_eval2 = mobility_eval2_for_player;
 
 
 int simple_eval(Othello game_state, color eval_player)
@@ -26,18 +25,13 @@ int simple_eval(Othello game_state, color eval_player)
     Bitboard self = game_state.get_board(eval_player);
     Bitboard opponent = game_state.get_board(eval_player ^ 1);
     int val = 0;
-    val += (popcount(self & corners)   - popcount(opponent & corners))   * a;
-    val += (popcount(self & x_squares) - popcount(opponent & x_squares)) * b;
-    val += (popcount(self & c_squares) - popcount(opponent & c_squares)) * c;
-    val += (popcount(self & a_squares) - popcount(opponent & a_squares)) * d;
-    val += (popcount(self & b_squares) - popcount(opponent & b_squares)) * e;
-    val += (popcount(self & others)    - popcount(opponent & others));
+    val += (popcount(self & corners)   - popcount(opponent & corners))   * 32;
+    val += (popcount(self & x_squares) - popcount(opponent & x_squares)) * -16;
+    val += (popcount(self & c_squares) - popcount(opponent & c_squares)) * -8;
+    val += (popcount(self & a_squares) - popcount(opponent & a_squares)) * 4;
+    val += (popcount(self & b_squares) - popcount(opponent & b_squares)) * 2;
+    val += (popcount(self & others)    - popcount(opponent & others)) * -1;
     return val;
-}
-
-int weak_eval(Othello game_state)
-{
-    return weak_eval_for_player(game_state, eval_player);
 }
 
 int weak_eval_for_player(Othello game_state, color eval_player)
@@ -77,11 +71,6 @@ static int mobility(const Othello& game, color player)
     return popcount(game.generate_moves_for(player));
 };
 
-int mobility_eval(Othello game_state)
-{
-    return mobility_eval_for_player(game_state, eval_player);
-}
-
 int mobility_eval_for_player(Othello game_state, color eval_player)
 {
     Bitboard self = game_state.get_board(eval_player);
@@ -109,23 +98,18 @@ int mobility_eval_for_player(Othello game_state, color eval_player)
     return val;
 }
 
-int mobility_eval2(Othello game_state)
-{
-    return mobility_eval2_for_player(game_state, eval_player);
-}
-
 int mobility_eval2_for_player(Othello game_state, color eval_player)
 {
     Bitboard self = game_state.get_board(eval_player);
     Bitboard opponent = game_state.get_board(eval_player ^ 1);
-    Bitboard moves = game_state.generate_moves_for(eval_player);
-    Bitboard opp_moves = game_state.generate_moves_for(eval_player ^ 1);
     int val = 0;
 
-    val += (popcount(self & corners) - popcount(opponent & corners)) * 16;
     val += (mobility(game_state, eval_player) - mobility(game_state, eval_player^1)) * 4;
-    val += (frontier(game_state, eval_player) - frontier(game_state, eval_player^1)) * -2;
-    val += (popcount(self) - popcount(opponent));
+    val += (frontier(game_state, eval_player) - frontier(game_state, eval_player^1)) * -1;
+    
+    val += (popcount(self & corners) - popcount(opponent & corners)) * 16;
+    val += (popcount(self & ~corners) - popcount(opponent & ~corners));
+    // val += simple_eval(game_state, eval_player);
 
     return val;
 }
@@ -133,20 +117,21 @@ int mobility_eval2_for_player(Othello game_state, color eval_player)
 /////////////////////////////////////////////////////////////////////////////////
 // alpha beta search
 /////////////////////////////////////////////////////////////////////////////////
-square alphabeta(const Othello node, const color player, int depth, eval_t eval)
+square alphabeta(const Othello node, const color player, int depth, eval2_t eval)
 {
     square best_move;
-    eval_player = player;
     int best_score = alphabeta(
-        node, player, &best_move, eval,
-        depth, std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), true
+        node, player, &best_move,
+        depth, std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), true,
+        eval, player
     );
     // std::printf("best score: %d\n", best_score);
     return best_move;
 }
 
-int alphabeta(const Othello node, const color player, square* best_move, eval_t eval,
-              int depth, int alpha, int beta, bool maximizingPlayer)
+int alphabeta(const Othello node, const color player, square* best_move,
+              int depth, int alpha, int beta, bool maximizingPlayer,
+              eval2_t eval, color eval_player)
 {
     Bitboard moves = node.generate_moves_for(player);
     Bitboard opp_moves = node.generate_moves_for(player ^ 1);
@@ -154,13 +139,27 @@ int alphabeta(const Othello node, const color player, square* best_move, eval_t 
     square moves_arr[64];
 
     // leaf
-    if (depth == 0 || (!moves && !opp_moves))
-        return eval(node);
+    if (depth == 0 || (!moves && !opp_moves)) {
+        int val = eval(node, eval_player);
+        
+        if (!moves && !opp_moves) {
+            // game over
+            int self_discs = popcount(node.get_board(eval_player));
+            int opp_discs = popcount(node.get_board(eval_player^1));
+            if (self_discs > opp_discs)
+                val += (self_discs-opp_discs) * 1024;
+            else
+                val += (self_discs-opp_discs-1) * 1024;
+        }
+        
+        return val;
+    }
     
     // pass
     if (!moves && opp_moves) {
-        return alphabeta(node, player^1, nullptr, eval,
-                         depth-1, alpha, beta, maximizingPlayer^1);
+        return alphabeta(node, player^1, nullptr,
+                         depth-1, alpha, beta, maximizingPlayer^1,
+                         eval, eval_player);
     }
 
     if (maximizingPlayer) {
@@ -174,15 +173,16 @@ int alphabeta(const Othello node, const color player, square* best_move, eval_t 
             Othello child = node;
 
             child.make_move(player, move);
-            score = alphabeta(child, player^1, nullptr, eval,
-                              depth-1, alpha, beta, maximizingPlayer^1);
+            score = alphabeta(child, player^1, nullptr,
+                              depth-1, alpha, beta, maximizingPlayer^1,
+                              eval, eval_player);
             if (score > max_score) {
                 max_score = score;
                 if (best_move) *best_move = move; // avoid null pointer dereference
                 alpha = std::max(score, alpha);
+                if (alpha >= beta)
+                    break;
             }
-            if (alpha >= beta)
-                break;
         }
         return max_score;
     } else {
@@ -196,15 +196,16 @@ int alphabeta(const Othello node, const color player, square* best_move, eval_t 
             Othello child = node;
 
             child.make_move(player, move);
-            score = alphabeta(child, player^1, nullptr, eval,
-                              depth-1, alpha, beta, maximizingPlayer^1);
+            score = alphabeta(child, player^1, nullptr,
+                              depth-1, alpha, beta, maximizingPlayer^1,
+                              eval, eval_player);
             if (score < min_score) {
                 min_score = score;
                 if (best_move) *best_move = move;
                 beta = std::min(score, beta);
+                if (alpha >= beta)
+                    break;
             }
-            if (alpha >= beta)
-                break;
         }
         return min_score;
     }

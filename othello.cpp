@@ -3,6 +3,7 @@
 #include <limits>
 #include "othello.h"
 #include "search.h"
+#include "advanced.h"
 
 Othello::Othello(void)
     : boards{0, 0}
@@ -137,18 +138,20 @@ void Othello::play_with_ai(color player)
     std::string input_move;
     Bitboard moves;
     square s;
+    int black_score, white_score;
 
     for (color turn = BLACK; ; turn ^= 1) {
-        std::printf("turn: %s\n", turn == BLACK ? "black" : "white");
-        
-        if (generate_moves_for(turn) == 0 && generate_moves_for(turn ^ 1) == 0) {
+        if (!has_valid_move(turn) && !has_valid_move(turn^1)) {
             // game over
+            std::puts("game over");
             break;
-        } else if (generate_moves_for(turn) == 0) {
+        } else if (!has_valid_move(turn)) {
             // no moves for current player, pass
             continue;
         }
 
+        std::printf("turn: %s\n", turn == BLACK ? "black" : "white");
+        
         if (turn == player) {
             moves = generate_moves_for(turn);
             print_board_with_moves(moves);
@@ -161,14 +164,25 @@ void Othello::play_with_ai(color player)
             make_move(turn, s);
         } else {
             Othello snapshot = *this;
-            s = alphabeta(snapshot, turn, 12);
-            snapshot.make_move(turn, s);
+
+            auto start = std::chrono::steady_clock::now();
+            s = iterative_alphabeta(snapshot, turn);
+            std::printf("time: %fs\n", std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count());
+    
             snapshot.set_square_state(s, STAT_EMPTY);
             snapshot.print_board_with_moves(1ull << s);
             
             make_move(turn, s);
         }
     }
+    
+    black_score = popcount(boards[BLACK]);
+    white_score = popcount(boards[WHITE]);
+    std::printf("result: BLACK %d - %d WHITE\n", black_score, white_score);
+    if (black_score == white_score)
+        std::puts("draw");
+    else
+        std::printf("%s wins\n", black_score > white_score ? "BLACK" : "WHITE");
 }
 
 void Othello::ai_self_play(color player)
@@ -177,11 +191,11 @@ void Othello::ai_self_play(color player)
     int black_score, white_score;
 
     for (color turn = BLACK; ; turn ^= 1) {
-        if (generate_moves_for(turn) == 0 && generate_moves_for(turn ^ 1) == 0) {
+        if (!has_valid_move(turn) && !has_valid_move(turn^1)) {
             // game over
             std::puts("game over");
             break;
-        } else if (generate_moves_for(turn) == 0) {
+        } else if (!has_valid_move(turn)) {
             // no moves for current player, pass
             continue;
         }
@@ -190,7 +204,11 @@ void Othello::ai_self_play(color player)
 
         if (turn == player) {
             Othello snapshot = *this;
-            s = alphabeta(snapshot, turn, 5);
+            
+            auto start = std::chrono::steady_clock::now();
+            s = iterative_alphabeta(snapshot, turn);
+            std::printf("time: %fs\n", std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count());
+
             snapshot.make_move(turn, s);
             snapshot.set_square_state(s, STAT_EMPTY);
             snapshot.print_board_with_moves(1ull << s);
@@ -198,7 +216,11 @@ void Othello::ai_self_play(color player)
             make_move(turn, s);
         } else {
             Othello snapshot = *this;
-            s = alphabeta(snapshot, turn, 7, mobility_eval2);
+            
+            s = rand_generate_smart(snapshot, turn);
+            // s = alphabeta(snapshot, turn, 12, simple_eval);
+            // s = negamax(snapshot, turn, 12, mobility_eval2);
+
             snapshot.make_move(turn, s);
             snapshot.set_square_state(s, STAT_EMPTY);
             snapshot.print_board_with_moves(1ull << s);
@@ -222,19 +244,24 @@ bool Othello::ai_play_with_rand(color player)
     int black_score, white_score;
 
     for (color turn = BLACK; ; turn ^= 1) {
-        if (generate_moves_for(turn) == 0 && generate_moves_for(turn ^ 1) == 0) {
+        if (!has_valid_move(turn) && !has_valid_move(turn^1)) {
             // game over
             break;
-        } else if (generate_moves_for(turn) == 0) {
+        } else if (!has_valid_move(turn)) {
             // no moves for current player, pass
             continue;
         }
 
         if (turn == player) {
             Othello snapshot = *this;
-            s = negamax(snapshot, turn, 3);
+
+            // auto start = std::chrono::steady_clock::now();
+            s = iterative_alphabeta(snapshot, turn, 4, 1000);
+            // std::printf("time: %fs\n", std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count());
+            
+            // s = alphabeta(snapshot, turn, 8, mobility_eval2);
+            // s = negamax(snapshot, turn, 4, mobility_eval2);
             // s = alphabeta(snapshot, turn, 2, mobility_eval2);
-            // s = alphabeta(snapshot, turn, 3);
 
             make_move(turn, s);
         } else {
@@ -246,14 +273,19 @@ bool Othello::ai_play_with_rand(color player)
         }
     }
 
-    // black_score = popcount(boards[BLACK]);
-    // white_score = popcount(boards[WHITE]);
-    // if (black_score == white_score)
-    //     std::puts("draw");
-    // else
-    //     std::printf("%s wins\n", black_score > white_score ? "BLACK" : "WHITE");
+    black_score = popcount(boards[BLACK]);
+    white_score = popcount(boards[WHITE]);
+    if (black_score == white_score)
+        std::puts("draw");
+    else
+        std::printf("%s wins\n", black_score > white_score ? "BLACK" : "WHITE");
     return popcount(boards[player]) > popcount(boards[player^1]);
 }
+
+
+#define RED   "\x1B[31m"
+#define CYAN  "\x1B[36;1m"
+#define RESET "\x1B[0m"
 
 void Othello::print_board(void)
 {
@@ -298,7 +330,7 @@ void Othello::print_board_with_moves(Bitboard moves)
             else if (boards[BLACK] & mask)
                 std::printf("%c ", 'B');
             else if (moves & mask)
-                std::printf("%c ", '+');
+                std::printf(CYAN "%c " RESET, '+');
             else
                 std::printf("%c ", '.');
         }
