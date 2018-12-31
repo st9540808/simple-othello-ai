@@ -3,12 +3,16 @@
 #include "othello.h"
 #include "search.h"
 
-double test(int a, int b, int c, int d, int e)
+double test(int _a, int _b, int _c, int _d, int _e)
 {
     const int play_count = 1000;
     int win_count = 0;
 
-    add_coeff(a, b, c, d, e);
+    a = a_init + _a;
+    b = b_init + _b;
+    c = c_init + _c;
+    d = d_init + _d;
+    e = e_init + _e;
 
     color player = BLACK;
     for (int i = 0; i < 500; i++) {
@@ -35,6 +39,7 @@ int main(int argc, char const *argv[])
     double min_prob = 1;
 
     for (int i = 0; i < 100; i++) {
+        
         #pragma omp parallel for num_threads(6) collapse(2)
         for (int a = -1; a <= 1; a++)
         for (int b = -1; b <= 1; b++)
@@ -53,7 +58,13 @@ int main(int argc, char const *argv[])
             }
         }
 
-        set_init(_a, _b, _c, _d, _e);
+        a_init += _a;
+        b_init += _b;
+        c_init += _c;
+        d_init += _d;
+        e_init += _e;
+
+        std::printf("-------<%d, %d, %d, %d, %d>-------\n");
     }
     return 0;
 }

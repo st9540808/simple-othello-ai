@@ -4,11 +4,11 @@
 #include "bitboard.h"
 #include "othello.h"
 
+extern int a_init, b_init, c_init, d_init, e_init;
+extern int a, b, c, d, e;
+
 typedef int (*eval_t)(Othello);
 typedef int (*eval2_t)(Othello, color);
-
-bool add_coeff(int _a, int _b, int _c, int _d, int _e);
-bool set_init(int _a, int _b, int _c, int _d, int _e);
 
 int weak_eval(Othello game_state);
 int weak_eval_for_player(Othello game_state, color eval_player);

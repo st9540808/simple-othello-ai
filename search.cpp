@@ -16,29 +16,9 @@ static constexpr Bitboard b_squares =
 static constexpr Bitboard others = ~(corners | x_squares | a_squares | b_squares);
 
 
-static int a_init = 31, b_init = -16, c_init = -7, d_init = 4, e_init = 3;
-static int a = a_init, b = b_init, c = c_init, d = d_init, e = e_init;
 
-bool set_init(int _a, int _b, int _c, int _d, int _e)
-{
-    a_init += _a;
-    b_init += _b;
-    c_init += _c;
-    d_init += _d,
-    e_init += _e;
-    add_coeff(0, 0, 0, 0, 0);
-    std::printf("<%d, %d, %d, %d, %d>\n", a, b, c, d, e);
-}
-
-bool add_coeff(int _a, int _b, int _c, int _d, int _e)
-{
-    a = a_init + _a;
-    b = b_init + _b;
-    c = c_init + _c;
-    d = d_init + _d,
-    e = e_init + _e;
-    return true;
-}
+int a_init = 31, b_init = -16, c_init = -7, d_init = 4, e_init = 3;
+int a = 31, b = -16, c = -7, d = 4, e = 3;
 
 
 int simple_eval(Othello game_state, color eval_player)
@@ -285,7 +265,7 @@ int negamax(const Othello node, const color player, square* best_move, eval2_t e
 /////////////////////////////////////////////////////////////////////////////////
 // randomly generate move
 /////////////////////////////////////////////////////////////////////////////////
-std::mutex m_smart;
+static std::mutex m_smart;
 
 square rand_generate(const Othello node, const color player)
 {
