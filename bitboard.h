@@ -7,6 +7,11 @@
 
 typedef uint64_t Bitboard;
 
+constexpr int popcount(Bitboard b)
+{
+    return __builtin_popcountll(b);
+}
+
 // const object in c++ implies internal linkage
 constexpr int num_squares = 64;
 enum square : int {
@@ -34,6 +39,11 @@ constexpr square make_square(int row, int col) {
     assert(0 <= row && row <= 7);
     assert(0 <= col && col <= 7);
     return static_cast<square>((row << 3) + col);
+}
+
+constexpr square make_square(Bitboard b) {
+    assert(popcount(b) == 1);
+    return static_cast<square>(__builtin_ctzll(b));
 }
 
 constexpr Bitboard make_bitboard(int row, int col) {
@@ -82,10 +92,6 @@ inline color operator^=(color& c, int i)
     return c = c ^ i;
 }
 
-inline int popcount(Bitboard b)
-{
-    return __builtin_popcountll(b);
-}
 
 void print_bitboard(Bitboard b);
 
