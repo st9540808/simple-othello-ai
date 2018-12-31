@@ -232,26 +232,26 @@ bool Othello::ai_play_with_rand(color player)
 
         if (turn == player) {
             Othello snapshot = *this;
-            s = alphabeta(snapshot, turn, 3, mobility_eval2);
-            // s = alphabeta(snapshot, turn, 3);
+            s = alphabeta(snapshot, turn, 3);
+            // s = alphabeta(snapshot, turn, 3, mobility_eval2);
             // s = negamax(snapshot, turn, 3, mobility_eval_for_player);
 
             make_move(turn, s);
         } else {
             Othello snapshot = *this;
-            // s = rand_generate(snapshot, turn);
             s = rand_generate_smart(snapshot, turn);
+            // s = rand_generate(snapshot, turn);
             
             make_move(turn, s);
         }
     }
 
-    black_score = popcount(boards[BLACK]);
-    white_score = popcount(boards[WHITE]);
-    if (black_score == white_score)
-        std::puts("draw");
-    else
-        std::printf("%s wins\n", black_score > white_score ? "BLACK" : "WHITE");
+    // black_score = popcount(boards[BLACK]);
+    // white_score = popcount(boards[WHITE]);
+    // if (black_score == white_score)
+    //     std::puts("draw");
+    // else
+    //     std::printf("%s wins\n", black_score > white_score ? "BLACK" : "WHITE");
     return popcount(boards[player]) > popcount(boards[player^1]);
 }
 

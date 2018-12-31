@@ -15,16 +15,32 @@ static constexpr Bitboard b_squares =
 static constexpr Bitboard others = ~(corners | x_squares | a_squares | b_squares);
 
 
+static constexpr int a_init = 32, b_init = -16, c_init = -8, d_init = 4, e_init = 2;
+static int a, b, c, d, e;
+
+bool add_coeff(int _a, int _b, int _c, int _d, int _e)
+{
+    a = a_init + _a;
+    b = b_init + _b;
+    c = c_init + _c;
+    d = d_init + _d,
+    e = e_init + _e;
+    return true;
+}
+
+
 int simple_eval(Othello game_state, color eval_player)
 {
+    static bool once = add_coeff(0, 0, 0, 0, 0);
+
     Bitboard self = game_state.get_board(eval_player);
     Bitboard opponent = game_state.get_board(eval_player ^ 1);
     int val = 0;
-    val += (popcount(self & corners)   - popcount(opponent & corners))   * 32;
-    val += (popcount(self & x_squares) - popcount(opponent & x_squares)) * -16;
-    val += (popcount(self & c_squares) - popcount(opponent & c_squares)) * -8;
-    val += (popcount(self & a_squares) - popcount(opponent & a_squares)) * 4;
-    val += (popcount(self & b_squares) - popcount(opponent & b_squares)) * 2;
+    val += (popcount(self & corners)   - popcount(opponent & corners))   * a;
+    val += (popcount(self & x_squares) - popcount(opponent & x_squares)) * b;
+    val += (popcount(self & c_squares) - popcount(opponent & c_squares)) * c;
+    val += (popcount(self & a_squares) - popcount(opponent & a_squares)) * d;
+    val += (popcount(self & b_squares) - popcount(opponent & b_squares)) * e;
     val += (popcount(self & others)    - popcount(opponent & others));
     return val;
 }
@@ -297,16 +313,8 @@ square rand_generate_smart(const Othello node, const color player)
     min = *std::min_element(std::begin(weights), std::begin(weights)+num_moves);
     for (int i = 0; i < num_moves; i++)
         weights[i] += -std::min(min, 0) + 1;
-    for (int i = 0; i < num_moves; i++)
-        weights[i] *= 2;
 
     std::discrete_distribution<> d(std::begin(weights), std::begin(weights)+num_moves);
-    // for (int i = 0; i < num_moves; i++)
-    //     std::printf("%d ", weights[i]);
-    // std::printf("| ");
-    // for (double d : d.probabilities())
-    //     std::printf("%f ", d);
-    // std::printf("\n");
     
     return moves_arr[d(generator)];
 }
