@@ -16,8 +16,19 @@ static constexpr Bitboard b_squares =
 static constexpr Bitboard others = ~(corners | x_squares | a_squares | b_squares);
 
 
-static constexpr int a_init = 31, b_init = -16, c_init = -7, d_init = 4, e_init = 3;
-static int a, b, c, d, e;
+static int a_init = 31, b_init = -16, c_init = -7, d_init = 4, e_init = 3;
+static int a = a_init, b = b_init, c = c_init, d = d_init, e = e_init;
+
+bool set_init(int _a, int _b, int _c, int _d, int _e)
+{
+    a_init += _a;
+    b_init += _b;
+    c_init += _c;
+    d_init += _d,
+    e_init += _e;
+    add_coeff(0, 0, 0, 0, 0);
+    std::printf("<%d, %d, %d, %d, %d>\n", a, b, c, d, e);
+}
 
 bool add_coeff(int _a, int _b, int _c, int _d, int _e)
 {
@@ -32,8 +43,6 @@ bool add_coeff(int _a, int _b, int _c, int _d, int _e)
 
 int simple_eval(Othello game_state, color eval_player)
 {
-    static bool once = add_coeff(0, 0, 0, 0, 0);
-
     Bitboard self = game_state.get_board(eval_player);
     Bitboard opponent = game_state.get_board(eval_player ^ 1);
     int val = 0;
