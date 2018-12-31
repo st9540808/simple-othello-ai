@@ -2,6 +2,7 @@
 #include <limits>
 #include <random>
 #include <algorithm>
+#include <mutex>
 
 static color eval_player; // player to evaluate
 static constexpr Bitboard corners = 0x8100000000000081ULL;
@@ -15,7 +16,7 @@ static constexpr Bitboard b_squares =
 static constexpr Bitboard others = ~(corners | x_squares | a_squares | b_squares);
 
 
-static constexpr int a_init = 32, b_init = -16, c_init = -8, d_init = 4, e_init = 2;
+static constexpr int a_init = 31, b_init = -16, c_init = -7, d_init = 4, e_init = 3;
 static int a, b, c, d, e;
 
 bool add_coeff(int _a, int _b, int _c, int _d, int _e)
@@ -226,7 +227,6 @@ int alphabeta(const Othello node, const color player, square* best_move, eval_t 
 square negamax(const Othello node, const color player, int depth, eval2_t eval)
 {
     square best_move;
-    eval_player = player;
     int best_score = negamax(
         node, player, &best_move, eval,
         depth, std::numeric_limits<int>::min(), std::numeric_limits<int>::max()
@@ -276,6 +276,8 @@ int negamax(const Othello node, const color player, square* best_move, eval2_t e
 /////////////////////////////////////////////////////////////////////////////////
 // randomly generate move
 /////////////////////////////////////////////////////////////////////////////////
+std::mutex m_smart;
+
 square rand_generate(const Othello node, const color player)
 {
     static std::mt19937 generator(std::random_device{}());
@@ -316,5 +318,6 @@ square rand_generate_smart(const Othello node, const color player)
 
     std::discrete_distribution<> d(std::begin(weights), std::begin(weights)+num_moves);
     
+    std::lock_guard<std::mutex> guard(m_smart);
     return moves_arr[d(generator)];
 }
