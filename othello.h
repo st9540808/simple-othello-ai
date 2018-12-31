@@ -12,6 +12,8 @@ public:
     Bitboard get_board(color player) const;
     Bitboard get_white_board() const;
     Bitboard get_black_board() const;
+    Bitboard get_occupancy() const;
+    Bitboard get_empty() const;
 
     state get_square_state(square);
     void set_square_state(square, state);

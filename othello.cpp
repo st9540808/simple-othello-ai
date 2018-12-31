@@ -28,6 +28,16 @@ Bitboard Othello::get_black_board() const
     return boards[BLACK];
 }
 
+Bitboard Othello::get_occupancy() const
+{
+    return (boards[WHITE] | boards[BLACK]);
+}
+
+Bitboard Othello::get_empty() const
+{
+    return ~(get_occupancy());
+}
+
 void Othello::set_square_state(square s, state stat)
 {
     Bitboard mask = make_bitboard(s);
@@ -180,7 +190,7 @@ void Othello::ai_self_play(color player)
 
         if (turn == player) {
             Othello snapshot = *this;
-            s = alphabeta(snapshot, turn, 4);
+            s = alphabeta(snapshot, turn, 3);
             snapshot.make_move(turn, s);
             snapshot.set_square_state(s, STAT_EMPTY);
             snapshot.print_board_with_moves(1ull << s);
@@ -188,7 +198,7 @@ void Othello::ai_self_play(color player)
             make_move(turn, s);
         } else {
             Othello snapshot = *this;
-            s = negamax(snapshot, turn, 4);
+            s = negamax(snapshot, turn, 7);
             snapshot.make_move(turn, s);
             snapshot.set_square_state(s, STAT_EMPTY);
             snapshot.print_board_with_moves(1ull << s);
@@ -224,7 +234,7 @@ bool Othello::ai_play_with_rand(color player)
 
         if (turn == player) {
             Othello snapshot = *this;
-            s = negamax(snapshot, turn, 8);
+            s = negamax(snapshot, turn, 3, mobility_eval_for_player);
             // snapshot.make_move(turn, s);
             // snapshot.set_square_state(s, STAT_EMPTY);
             // snapshot.print_board_with_moves(1ull << s);
