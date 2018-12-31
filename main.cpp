@@ -8,7 +8,6 @@ int main(int argc, char const *argv[])
     const int play_count = 1000;
     int win_count;
 
-
     color player = BLACK;
     for (int i = 0; i < 500; i++) {
         Othello othello;
@@ -24,6 +23,9 @@ int main(int argc, char const *argv[])
     }
 
     std::printf("win probability: %f\n", (float) win_count / play_count);
+
+    // Othello othello;
+    // othello.ai_self_play();
 
     return 0;
 }
