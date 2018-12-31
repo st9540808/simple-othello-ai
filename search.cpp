@@ -3,6 +3,7 @@
 #include <random>
 
 static color eval_player; // player to evaluate
+static constexpr Bitboard corners = 0x8100000000000081ULL;
 
 int weak_eval(Othello game_state)
 {
@@ -11,8 +12,6 @@ int weak_eval(Othello game_state)
 
 int weak_eval_for_player(Othello game_state, color eval_player)
 {
-    static constexpr Bitboard corners = 0x8100000000000081ULL;
-
     Bitboard self = game_state.get_board(eval_player);
     Bitboard opponent = game_state.get_board(eval_player ^ 1);
     Bitboard self_moves = game_state.generate_moves_for(eval_player);
@@ -32,25 +31,29 @@ int weak_eval_for_player(Othello game_state, color eval_player)
     return val;
 }
 
-int mobility_eval_for_player(Othello game_state)
+/////////////////////////////////////////////////////////////////////////////////
+// for mobility evalution
+/////////////////////////////////////////////////////////////////////////////////
+static int frontier(const Othello& game, color player)
+{
+    Bitboard b = game.get_board(player), empty = game.get_empty();
+    Bitboard f = 0;
+    for (int dir = 0; dir < num_dirs; dir++)
+        f |= shift(b, dir) & empty;
+    return popcount(f);
+};
+static int mobility(const Othello& game, color player)
+{
+    return popcount(game.generate_moves_for(player));
+};
+
+int mobility_eval(Othello game_state)
 {
     return mobility_eval_for_player(game_state, eval_player);
 }
 
 int mobility_eval_for_player(Othello game_state, color eval_player)
 {
-    static constexpr Bitboard corners = 0x8100000000000081ULL;
-    static auto frontier = [](const Othello& game, color player) -> int {
-        Bitboard b = game.get_board(player), empty = game.get_empty();
-        Bitboard f = 0;
-        for (int dir = 0; dir < num_dirs; dir++)
-            f |= shift(b, dir) & empty;
-        return popcount(f);
-    };
-    static auto mobility = [](const Othello& game, color player) -> int {
-        return popcount(game.generate_moves_for(player));
-    };
-
     Bitboard self = game_state.get_board(eval_player);
     Bitboard opponent = game_state.get_board(eval_player ^ 1);
     Bitboard moves = game_state.generate_moves_for(eval_player);
@@ -70,7 +73,29 @@ int mobility_eval_for_player(Othello game_state, color eval_player)
 
     val += (popcount(self & corners) - popcount(opponent & corners)) * 16;
     val += (self_mobility - opp_mobility) * 4;
-    val += (frontier(game_state, eval_player) - frontier(game_state, eval_player^1)) * -2;
+    val += (frontier(game_state, eval_player) - frontier(game_state, eval_player^1)) * -1;
+    val += (popcount(self) - popcount(opponent));
+
+    return val;
+}
+
+int mobility_eval2(Othello game_state)
+{
+    return mobility_eval2_for_player(game_state, eval_player);
+}
+
+int mobility_eval2_for_player(Othello game_state, color eval_player)
+{
+    Bitboard self = game_state.get_board(eval_player);
+    Bitboard opponent = game_state.get_board(eval_player ^ 1);
+    Bitboard moves = game_state.generate_moves_for(eval_player);
+    Bitboard opp_moves = game_state.generate_moves_for(eval_player ^ 1);
+    int val = 0;
+
+    val += (popcount(self & corners) - popcount(opponent & corners)) * 16;
+    val += (mobility(game_state, eval_player) - mobility(game_state, eval_player^1)) * 4;
+    val += (frontier(game_state, eval_player) - frontier(game_state, eval_player^1)) * -1;
+    val += (popcount(self) - popcount(opponent));
 
     return val;
 }

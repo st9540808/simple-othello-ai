@@ -190,7 +190,7 @@ void Othello::ai_self_play(color player)
 
         if (turn == player) {
             Othello snapshot = *this;
-            s = alphabeta(snapshot, turn, 3);
+            s = alphabeta(snapshot, turn, 9);
             snapshot.make_move(turn, s);
             snapshot.set_square_state(s, STAT_EMPTY);
             snapshot.print_board_with_moves(1ull << s);
@@ -198,7 +198,7 @@ void Othello::ai_self_play(color player)
             make_move(turn, s);
         } else {
             Othello snapshot = *this;
-            s = negamax(snapshot, turn, 7);
+            s = alphabeta(snapshot, turn, 7, mobility_eval2);
             snapshot.make_move(turn, s);
             snapshot.set_square_state(s, STAT_EMPTY);
             snapshot.print_board_with_moves(1ull << s);
@@ -235,18 +235,13 @@ bool Othello::ai_play_with_rand(color player)
         if (turn == player) {
             Othello snapshot = *this;
             // s = negamax(snapshot, turn, 3, mobility_eval_for_player);
-            s = alphabeta(snapshot, turn, 3, mobility_eval_for_player);
-            // snapshot.make_move(turn, s);
-            // snapshot.set_square_state(s, STAT_EMPTY);
-            // snapshot.print_board_with_moves(1ull << s);
+            s = alphabeta(snapshot, turn, 5, mobility_eval2);
+            // s = alphabeta(snapshot, turn, 3);
             
             make_move(turn, s);
         } else {
             Othello snapshot = *this;
             s = rand_generate(snapshot, turn);
-            // snapshot.make_move(turn, s);
-            // snapshot.set_square_state(s, STAT_EMPTY);
-            // snapshot.print_board_with_moves(1ull << s);
             
             make_move(turn, s);
         }
