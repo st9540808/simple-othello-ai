@@ -4,7 +4,7 @@
 
 static color eval_player; // player to evaluate
 
-int eval(Othello game_state)
+int weak_eval(Othello game_state)
 {
     static constexpr Bitboard corners = 0x8100000000000081ULL;
 
@@ -27,21 +27,20 @@ int eval(Othello game_state)
     return val;
 }
 
-square alphabeta(const Othello node, int depth, const color player)
+square alphabeta(const Othello node, int depth, const color player, eval_t eval)
 {
     square best_move;
     eval_player = player;
     int best_score = alphabeta(
-        node, depth,
-        std::numeric_limits<int>::min(), std::numeric_limits<int>::max(),
-        player, true, &best_move
+        node, player, &best_move, eval,
+        depth, std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), true
     );
     std::printf("best score: %d\n", best_score);
     return best_move;
 }
 
-int alphabeta(const Othello node, int depth, int alpha, int beta,
-              const color player, bool maximizingPlayer, square* best_move)
+int alphabeta(const Othello node, const color player, square* best_move, eval_t eval,
+              int depth, int alpha, int beta, bool maximizingPlayer)
 {
     Bitboard moves = node.generate_moves_for(player);
     Bitboard opp_moves = node.generate_moves_for(player ^ 1);
@@ -54,8 +53,8 @@ int alphabeta(const Othello node, int depth, int alpha, int beta,
     
     // pass
     if (!moves && opp_moves) {
-        return alphabeta(node, depth-1, alpha, beta,
-                         player^1, maximizingPlayer^1, nullptr);
+        return alphabeta(node, player^1, nullptr, eval,
+                         depth-1, alpha, beta, maximizingPlayer^1);
     }
 
     if (maximizingPlayer) {
@@ -69,7 +68,8 @@ int alphabeta(const Othello node, int depth, int alpha, int beta,
             Othello child = node;
 
             child.make_move(player, move);
-            score = alphabeta(child, depth-1, alpha, beta, player^1, false, nullptr);
+            score = alphabeta(child, player^1, nullptr, eval,
+                              depth-1, alpha, beta, maximizingPlayer^1);
             if (score > max_score) {
                 max_score = score;
                 if (best_move) *best_move = move; // avoid null pointer dereference
@@ -90,7 +90,8 @@ int alphabeta(const Othello node, int depth, int alpha, int beta,
             Othello child = node;
 
             child.make_move(player, move);
-            score = alphabeta(child, depth-1, alpha, beta, player^1, true, nullptr);
+            score = alphabeta(child, player^1, nullptr, eval,
+                              depth-1, alpha, beta, maximizingPlayer^1);
             if (score < min_score) {
                 min_score = score;
                 if (best_move) *best_move = move;

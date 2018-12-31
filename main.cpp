@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
             win_count++;
     }
 
-    std::printf("win probability: %f", (float) win_count / play_count);
+    std::printf("win probability: %f\n", (float) win_count / play_count);
 
     return 0;
 }
