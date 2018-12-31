@@ -1,9 +1,33 @@
 #include "search.h"
 #include <limits>
 #include <random>
+#include <algorithm>
 
 static color eval_player; // player to evaluate
 static constexpr Bitboard corners = 0x8100000000000081ULL;
+static constexpr Bitboard x_squares = make_bitboard(SQ_B2) | SQ_G2 | SQ_B7 | SQ_G7;
+static constexpr Bitboard c_squares =
+      make_bitboard(SQ_B1) | SQ_G1 | SQ_A2 | SQ_H2 | SQ_A7 | SQ_H7 | SQ_B8 | SQ_G8;
+static constexpr Bitboard a_squares =
+      make_bitboard(SQ_C1) | SQ_F1 | SQ_A3 | SQ_H3 | SQ_A6 | SQ_H6 | SQ_C8 | SQ_F8;
+static constexpr Bitboard b_squares =
+      make_bitboard(SQ_D1) | SQ_E1 | SQ_A4 | SQ_H4 | SQ_A5 | SQ_H5 | SQ_D8 | SQ_E8;
+static constexpr Bitboard others = ~(corners | x_squares | a_squares | b_squares);
+
+
+int simple_eval(Othello game_state, color eval_player)
+{
+    Bitboard self = game_state.get_board(eval_player);
+    Bitboard opponent = game_state.get_board(eval_player ^ 1);
+    int val = 0;
+    val += (popcount(self & corners)   - popcount(opponent & corners))   * 32;
+    val += (popcount(self & x_squares) - popcount(opponent & x_squares)) * -16;
+    val += (popcount(self & c_squares) - popcount(opponent & c_squares)) * -8;
+    val += (popcount(self & a_squares) - popcount(opponent & a_squares)) * 4;
+    val += (popcount(self & b_squares) - popcount(opponent & b_squares)) * 2;
+    val += (popcount(self & others)    - popcount(opponent & others));
+    return val;
+}
 
 int weak_eval(Othello game_state)
 {
@@ -94,12 +118,15 @@ int mobility_eval2_for_player(Othello game_state, color eval_player)
 
     val += (popcount(self & corners) - popcount(opponent & corners)) * 16;
     val += (mobility(game_state, eval_player) - mobility(game_state, eval_player^1)) * 4;
-    val += (frontier(game_state, eval_player) - frontier(game_state, eval_player^1)) * -1;
+    val += (frontier(game_state, eval_player) - frontier(game_state, eval_player^1)) * -2;
     val += (popcount(self) - popcount(opponent));
 
     return val;
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// alpha beta search
+/////////////////////////////////////////////////////////////////////////////////
 square alphabeta(const Othello node, const color player, int depth, eval_t eval)
 {
     square best_move;
@@ -177,6 +204,9 @@ int alphabeta(const Othello node, const color player, square* best_move, eval_t 
     }
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// negamax
+/////////////////////////////////////////////////////////////////////////////////
 square negamax(const Othello node, const color player, int depth, eval2_t eval)
 {
     square best_move;
@@ -227,16 +257,20 @@ int negamax(const Othello node, const color player, square* best_move, eval2_t e
     return best_value;
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// randomly generate move
+/////////////////////////////////////////////////////////////////////////////////
 square rand_generate(const Othello node, const color player)
 {
     static std::mt19937 generator(std::random_device{}());
+    
     Bitboard moves = node.generate_moves_for(player);
     const int num_moves = popcount(moves);
     square moves_arr[64];
 
-    Othello::convert_moves_to_arr(moves, moves_arr, num_moves);
+    assert(num_moves > 0);
 
-    assert(popcount(moves) != 0);
+    Othello::convert_moves_to_arr(moves, moves_arr, num_moves);
     std::uniform_int_distribution<> dist(0, num_moves-1);
 
     return moves_arr[dist(generator)];
@@ -244,5 +278,33 @@ square rand_generate(const Othello node, const color player)
 
 square rand_generate_smart(const Othello node, const color player)
 {
+    static std::mt19937 generator(std::random_device{}());
+    
+    Bitboard moves = node.generate_moves_for(player);
+    const int num_moves = popcount(moves);
+    square moves_arr[64];
+    int weights[64], min;
 
+    assert(num_moves > 0);
+
+    Othello::convert_moves_to_arr(moves, moves_arr, num_moves);
+    for (int i = 0; i < num_moves; i++) {
+        Othello child = node;
+        child.make_move(player, moves_arr[i]);
+        weights[i] = simple_eval(child, player);
+    }
+
+    min = *std::min_element(std::begin(weights), std::begin(weights)+num_moves);
+    for (int i = 0; i < num_moves; i++)
+        weights[i] += -std::min(min, 0) + 1;
+
+    std::discrete_distribution<> d(std::begin(weights), std::begin(weights)+num_moves);
+    // for (int i = 0; i < num_moves; i++)
+    //     std::printf("%d ", weights[i]);
+    // std::printf("| ");
+    // for (double d : d.probabilities())
+    //     std::printf("%f ", d);
+    // std::printf("\n");
+    
+    return moves_arr[d(generator)];
 }

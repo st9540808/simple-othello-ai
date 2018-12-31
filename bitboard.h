@@ -57,12 +57,12 @@ constexpr Bitboard make_bitboard(square s) {
     return 1ull << (static_cast<int>(s));
 }
 
-inline Bitboard operator&(Bitboard b, square s) {
+constexpr Bitboard operator&(Bitboard b, square s) {
     assert(s >= SQ_A1 && s <= SQ_H8);
     return b & (1ull << static_cast<int>(s));
 }
 
-inline Bitboard operator|(Bitboard b, square s) {
+constexpr Bitboard operator|(Bitboard b, square s) {
     assert(s >= SQ_A1 && s <= SQ_H8);
     return b | (1ull << static_cast<int>(s));
 }
