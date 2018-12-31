@@ -234,7 +234,8 @@ bool Othello::ai_play_with_rand(color player)
 
         if (turn == player) {
             Othello snapshot = *this;
-            s = negamax(snapshot, turn, 3, mobility_eval_for_player);
+            // s = negamax(snapshot, turn, 3, mobility_eval_for_player);
+            s = alphabeta(snapshot, turn, 3, mobility_eval_for_player);
             // snapshot.make_move(turn, s);
             // snapshot.set_square_state(s, STAT_EMPTY);
             // snapshot.print_board_with_moves(1ull << s);

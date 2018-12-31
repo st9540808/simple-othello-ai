@@ -32,6 +32,11 @@ int weak_eval_for_player(Othello game_state, color eval_player)
     return val;
 }
 
+int mobility_eval_for_player(Othello game_state)
+{
+    return mobility_eval_for_player(game_state, eval_player);
+}
+
 int mobility_eval_for_player(Othello game_state, color eval_player)
 {
     static constexpr Bitboard corners = 0x8100000000000081ULL;
