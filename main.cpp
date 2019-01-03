@@ -27,9 +27,9 @@ double test(void)
 
 int main(int argc, char const *argv[])
 {
-    Othello othello;
-    othello.ai_self_play();
+    // Othello othello;
+    // othello.ai_self_play();
     // othello.play_with_ai(BLACK);
 
-    // std::printf("win probability: %f ", test());
+    std::printf("win probability: %f ", test());
 }

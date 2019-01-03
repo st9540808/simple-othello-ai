@@ -3,35 +3,39 @@
 #include <limits>
 #include <algorithm>
 #include <chrono>
+#include <exception>
+#include <atomic>
 
-square iterative_alphabeta(const Othello node, const color player, int init_depth, int eval_cnt_bound)
+square iterative_alphabeta(const Othello node, const color player,
+                           int init_depth, int eval_cnt_bound)
 {
     square best_move, move;
-    int eval_cnt = 0, best_score = std::numeric_limits<int>::min();
+    int eval_cnt = 0;
     int score, depth = init_depth;
 
     best_move = rand_generate(node, player); // eliminate compiler warning
     for (depth = init_depth; eval_cnt < eval_cnt_bound && depth < 25; depth++) {
-        move = alphabeta_mo(node, player, depth, &eval_cnt, &score);
-        if (score > best_score) {
-            best_score = score;
+        try {
+            move = alphabeta_mo(node, player, depth, &eval_cnt, eval_cnt_bound, &score);
             best_move = move;
-            // if (best_score >= 1024)
-            //     break;
+        } catch (const std::runtime_error& r) {
+            std::printf("%s\n", r.what());
+            depth--;
+            break;
         }
     }
-    // std::printf("depth: %d\n", depth);
+    std::printf("depth: %d\n", depth);
     return best_move;
 }
 
 square alphabeta_mo(const Othello node, const color player, int depth,
-                    int* eval_cnt, int* best_score, eval2_t eval)
+                    int* eval_cnt, int eval_cnt_bound, int* best_score, eval2_t eval)
 {
     square best_move;
     int s = alphabeta_mo(
         node, player, &best_move,
         depth, std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), true,
-        eval, player, eval_cnt
+        eval, player, eval_cnt, eval_cnt_bound
     );
     if (best_score) *best_score = s;
     return best_move;
@@ -39,8 +43,7 @@ square alphabeta_mo(const Othello node, const color player, int depth,
 
 int alphabeta_mo(const Othello node, const color player, square* best_move,
                  int depth, int alpha, int beta, bool maximizingPlayer,
-                 eval2_t eval, color eval_player,
-                 int* eval_cnt)
+                 eval2_t eval, color eval_player, int* eval_cnt, int eval_cnt_bound)
 {
     Bitboard moves = node.generate_moves_for(player);
     Bitboard opp_moves = node.generate_moves_for(player^1);
@@ -61,7 +64,8 @@ int alphabeta_mo(const Othello node, const color player, square* best_move,
                 val += (self_discs-opp_discs-1) * 1024;
         }
         
-        ++*eval_cnt;
+        if (++*eval_cnt > eval_cnt_bound)
+            throw std::runtime_error("timeout");
         return val;
     }
     
@@ -69,7 +73,7 @@ int alphabeta_mo(const Othello node, const color player, square* best_move,
     if (!moves && opp_moves) {
         return alphabeta_mo(node, player^1, nullptr,
                             depth-1, alpha, beta, maximizingPlayer^1,
-                            eval, eval_player, eval_cnt);
+                            eval, eval_player, eval_cnt, eval_cnt_bound);
     }
 
     if (maximizingPlayer) {
@@ -87,7 +91,7 @@ int alphabeta_mo(const Othello node, const color player, square* best_move,
             child.make_move(player, move);
             score = alphabeta_mo(child, player^1, nullptr,
                                  depth-1, alpha, beta, maximizingPlayer^1,
-                                 eval, eval_player, eval_cnt);
+                                 eval, eval_player, eval_cnt, eval_cnt_bound);
             if (score > max_score) {
                 max_score = score;
                 if (best_move) *best_move = move; // avoid null pointer dereference
@@ -110,7 +114,7 @@ int alphabeta_mo(const Othello node, const color player, square* best_move,
             child.make_move(player, move);
             score = alphabeta_mo(child, player^1, nullptr,
                                  depth-1, alpha, beta, maximizingPlayer^1,
-                                 eval, eval_player, eval_cnt);
+                                 eval, eval_player, eval_cnt, eval_cnt_bound);
             if (score < min_score) {
                 min_score = score;
                 if (best_move) *best_move = move;
