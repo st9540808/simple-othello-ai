@@ -6,6 +6,10 @@
 #include <vector>
 #include "bitboard.h"
 
+#define RED   "\x1B[31m"
+#define CYAN  "\x1B[36;1m"
+#define RESET "\x1B[0m"
+
 class Othello {
 public:
     Othello(void);

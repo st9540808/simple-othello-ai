@@ -150,9 +150,10 @@ void Othello::play_with_ai(color player)
             continue;
         }
 
-        std::printf("turn: %s\n", turn == BLACK ? "black" : "white");
         
         if (turn == player) {
+            std::printf("turn: %s\n", turn == BLACK ? "black" : "white");
+            
             moves = generate_moves_for(turn);
             print_board_with_moves(moves);
             do {
@@ -164,6 +165,8 @@ void Othello::play_with_ai(color player)
             make_move(turn, s);
         } else {
             Othello snapshot = *this;
+
+            std::printf(CYAN "turn: %s" RESET "\n", turn == BLACK ? "black" : "white");
 
             auto start = std::chrono::steady_clock::now();
             s = iterative_alphabeta(snapshot, turn);
@@ -218,7 +221,7 @@ void Othello::ai_self_play(color player)
             Othello snapshot = *this;
             
             s = rand_generate_smart(snapshot, turn);
-            // s = alphabeta(snapshot, turn, 12, simple_eval);
+            // s = alphabeta(snapshot, turn, 10);
             // s = negamax(snapshot, turn, 12, mobility_eval2);
 
             snapshot.make_move(turn, s);
@@ -256,7 +259,7 @@ bool Othello::ai_play_with_rand(color player)
             Othello snapshot = *this;
 
             // auto start = std::chrono::steady_clock::now();
-            s = iterative_alphabeta(snapshot, turn, 4, 1000);
+            s = iterative_alphabeta(snapshot, turn, 4, 5000);
             // std::printf("time: %fs\n", std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count());
             
             // s = alphabeta(snapshot, turn, 8, mobility_eval2);
@@ -282,10 +285,6 @@ bool Othello::ai_play_with_rand(color player)
     return popcount(boards[player]) > popcount(boards[player^1]);
 }
 
-
-#define RED   "\x1B[31m"
-#define CYAN  "\x1B[36;1m"
-#define RESET "\x1B[0m"
 
 void Othello::print_board(void)
 {

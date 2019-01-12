@@ -15,15 +15,15 @@ inline double duration(F&& func, Args&&... args)
     return diff.count();
 }
 
-static constexpr int eval_cnt_bound = 25000000;
-static constexpr int init_depth = 8;
+static constexpr int eval_cnt_bound = 1000000;
+static constexpr int init_depth = 6;
 
 square iterative_alphabeta(const Othello node, const color player,
                            int init_depth = init_depth, int eval_cnt_bound = eval_cnt_bound);
-square alphabeta_mo(const Othello node, const color player, int depth,
+square alphabeta_mo(const Othello& node, const color player, int depth,
                     int* eval_cnt, int eval_cnt_bound = eval_cnt_bound,
                     int* best_score = nullptr, eval2_t eval = mobility_eval2);
-int alphabeta_mo(const Othello node, const color player, square* best_move,
+int alphabeta_mo(const Othello& node, const color player, square* best_move,
                  int depth, int alpha, int beta, bool maximizingPlayer,
                  eval2_t eval, color eval_player, int* eval_cnt, int eval_cnt_bound);
 

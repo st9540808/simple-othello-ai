@@ -5,20 +5,24 @@
 
 double test(void)
 {
-    const int play_count = 1000;
+    const int play_count = 10000;
     int win_count = 0;
 
     color player = BLACK;
-    for (int i = 0; i < 500; i++) {
+    // #pragma omp parallel for
+    for (int i = 0; i < 5000; i++) {
         Othello othello;
         if (othello.ai_play_with_rand(player))
+            // #pragma omp atomic
             win_count++;
     }
 
     player = WHITE;
-    for (int i = 0; i < 500; i++) {
+    // #pragma omp parallel for
+    for (int i = 0; i < 5000; i++) {
         Othello othello;
         if (othello.ai_play_with_rand(player))
+            // #pragma omp atomic
             win_count++;
     }
 
@@ -27,9 +31,10 @@ double test(void)
 
 int main(int argc, char const *argv[])
 {
-    // Othello othello;
+    Othello othello;
     // othello.ai_self_play();
-    // othello.play_with_ai(BLACK);
+    othello.play_with_ai(BLACK);
 
-    std::printf("win probability: %f ", test());
+    // std::printf("win probability: %f ", test());
+    return 0;
 }

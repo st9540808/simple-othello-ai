@@ -104,11 +104,11 @@ int mobility_eval2_for_player(Othello game_state, color eval_player)
     Bitboard opponent = game_state.get_board(eval_player ^ 1);
     int val = 0;
 
-    val += (mobility(game_state, eval_player) - mobility(game_state, eval_player^1)) * 4;
-    val += (frontier(game_state, eval_player) - frontier(game_state, eval_player^1)) * -1;
+    val += (mobility(game_state, eval_player) - mobility(game_state, eval_player^1)) * 8;
+    val += (frontier(game_state, eval_player) - frontier(game_state, eval_player^1)) * -2;
     
-    val += (popcount(self & corners) - popcount(opponent & corners)) * 16;
-    val += (popcount(self & ~corners) - popcount(opponent & ~corners));
+    val += (popcount(self & corners) - popcount(opponent & corners)) * 32;
+    val += (popcount(self) - popcount(opponent));
     // val += simple_eval(game_state, eval_player);
 
     return val;
