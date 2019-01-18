@@ -8,6 +8,8 @@
 #include <functional>
 #include <type_traits>
 
+constexpr static int int_min = std::numeric_limits<int>::min();
+constexpr static int int_max = std::numeric_limits<int>::max();
 
 inline auto run_async(Othello node, color player, 
                       int depth, int eval_cnt_bound)
@@ -41,9 +43,9 @@ square iterative_alphabeta(const Othello node, const color player,
     auto depth_plus2 = run_async(node, player, init_depth+2, eval_cnt_bound);
     
     // eliminate compiler warning
-    best_move = alphabeta_mo(node, player, init_depth, &eval_cnt,
-                             std::numeric_limits<int>::max(), &best_score);
+    best_move = alphabeta_mo(node, player, init_depth, &eval_cnt, int_max, &best_score);
     eval_cnt_bound -= eval_cnt;
+    
     for (depth = init_depth+1; eval_cnt < eval_cnt_bound && depth < 25; depth++) {
         if (!(init_depth+2 <= depth && depth <= init_depth+4)) {
             try {
@@ -94,7 +96,7 @@ square alphabeta_mo(const Othello& node, const color player, int depth,
     square best_move;
     int s = alphabeta_mo(
         node, player, &best_move,
-        depth, std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), true,
+        depth, int_min, int_max, true,
         eval, player, eval_cnt, eval_cnt_bound
     );
     if (best_score) *best_score = s;
@@ -136,11 +138,11 @@ int alphabeta_mo(const Othello& node, const color player, square* best_move,
                             eval, eval_player, eval_cnt, eval_cnt_bound);
     }
 
+    Othello::convert_moves_to_arr(moves, moves_arr, num_moves);
     if (maximizingPlayer) {
-        int max_score = std::numeric_limits<int>::min();
+        int max_score = int_min;
         int score;
 
-        Othello::convert_moves_to_arr(moves, moves_arr, num_moves);
         // do move ordering when first called
         if (best_move) move_ordering(node, eval_player, moves_arr, num_moves);
 
@@ -162,10 +164,8 @@ int alphabeta_mo(const Othello& node, const color player, square* best_move,
         }
         return max_score;
     } else {
-        int min_score = std::numeric_limits<int>::max();
+        int min_score = int_max;
         int score;
-
-        Othello::convert_moves_to_arr(moves, moves_arr, num_moves);
 
         for (int i = 0; i < num_moves; i++) {
             square move = moves_arr[i];
@@ -177,7 +177,8 @@ int alphabeta_mo(const Othello& node, const color player, square* best_move,
                                  eval, eval_player, eval_cnt, eval_cnt_bound);
             if (score < min_score) {
                 min_score = score;
-                if (best_move) *best_move = move;
+                // don't need this statement since we always get best_move from max node
+                // if (best_move) *best_move = move;
                 beta = std::min(score, beta);
                 if (alpha >= beta)
                     break;
@@ -204,8 +205,7 @@ void move_ordering(const Othello node, const color player, square* moves_arr, in
 
         orders[i].perm = i;
         orders[i].weight = alphabeta(
-            child, player, nullptr,
-            2, std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), true,
+            child, player, nullptr, 2, int_min, int_max, true,
             mobility_eval, player
         );
         // orders[i].weight = simple_eval(child, player);
