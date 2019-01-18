@@ -1,0 +1,754 @@
+turn: black
+depth: 11, score: 17
+time: 0.577586s
+  A B C D E F G H
+1 . . . . . . . .
+2 . . . . . . . .
+3 . . . + . . . .
+4 . . . W B . . .
+5 . . . B W . . .
+6 . . . . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . . . . . . . .
+2 . . . . . . . .
+3 . . + B + . . .
+4 . . . B B . . .
+5 . . + B W . . .
+6 . . . . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+c3
+turn: black
+depth: 10, score: -8
+time: 0.616104s
+  A B C D E F G H
+1 . . . . . . . .
+2 . . . . . . . .
+3 . . W B . . . .
+4 . . . W B . . .
+5 . . . B W + . .
+6 . . . . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . . . . . . . .
+2 . . . + . . . .
+3 . . W B + . . .
+4 . . . W B + . .
+5 . . . B B B . .
+6 . . . + . + . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+d2
+turn: black
+depth: 11, score: 9
+time: 0.558652s
+  A B C D E F G H
+1 . . . + . . . .
+2 . . . W . . . .
+3 . . W W . . . .
+4 . . . W B . . .
+5 . . . B B B . .
+6 . . . . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . . . B + . . .
+2 . . . B . . . .
+3 . . W B + . . .
+4 . . . B B . . .
+5 . . . B B B . .
+6 . . . . . + . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+e3
+turn: black
+depth: 11, score: 7
+time: 0.578691s
+  A B C D E F G H
+1 . . . B . . . .
+2 . . . B . . . .
+3 . . W W W . . .
+4 . . . B B + . .
+5 . . . B B B . .
+6 . . . . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . . . B + . . .
+2 . . . B . . . .
+3 . . W W B + . .
+4 . . . B B B . .
+5 . . . B B B . .
+6 . . . + . + + .
+7 . . . . . . . .
+8 . . . . . . . .
+
+f3
+turn: black
+depth: 10, score: -16
+time: 0.613796s
+  A B C D E F G H
+1 . . . B . . . .
+2 . . + B . . . .
+3 . . W W W W . .
+4 . . . B B B . .
+5 . . . B B B . .
+6 . . . . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . . + B + . . .
+2 . . B B . . . .
+3 . . W B W W . .
+4 . . . B B B . .
+5 . . + B B B + .
+6 . . + . + + . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+c1
+turn: black
+depth: 11, score: 17
+time: 0.593309s
+  A B C D E F G H
+1 . + W B . . . .
+2 . . W W . . . .
+3 . . W B W W . .
+4 . . . B B B . .
+5 . . . B B B . .
+6 . . . . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B . . . .
+2 . + B W . . . .
+3 . . W B W W . .
+4 . . . B B B . .
+5 . . + B B B + .
+6 . . + + + + . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+c5
+turn: black
+depth: 10, score: 6
+time: 0.657290s
+  A B C D E F G H
+1 . B B B . . . .
+2 . . B W . . . .
+3 . + W B W W . .
+4 . . . W B B . .
+5 . . W B B B . .
+6 . . . . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B . . . .
+2 . + B W . . . .
+3 + B B B W W . .
+4 . + . W B B + .
+5 . . W B B B + .
+6 . . + + + + . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+a3
+turn: black
+depth: 10, score: 0
+time: 0.615175s
+  A B C D E F G H
+1 . B B B . . . .
+2 . . B W . . . .
+3 W W W W W W . .
+4 . . . W B B . .
+5 . + W B B B . .
+6 . . . . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B . . . .
+2 . + B W . . . .
+3 W W W W W W . .
+4 . . . W B B + .
+5 . B B B B B + .
+6 . + + + + + + .
+7 . . . . . . . .
+8 . . . . . . . .
+
+b6
+turn: black
+depth: 10, score: 22
+time: 0.582199s
+  A B C D E F G H
+1 . B B B . . . .
+2 . . B W . . . .
+3 W W W W W W . .
+4 . . + W B B . .
+5 . B W B B B . .
+6 . W . . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B . . . .
+2 . + B W . . . .
+3 W W B W W W . .
+4 . + B B B B . .
+5 + B W B B B + .
+6 + W + + + + + .
+7 . . . . . . . .
+8 . . . . . . . .
+
+b4
+turn: black
+depth: 9, score: 55
+time: 0.721255s
+  A B C D E F G H
+1 . B B B . . . .
+2 . . B W . . . .
+3 W W W W W W . .
+4 . W B B B B . .
+5 . W W B B B . .
+6 . W + . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B . . . .
+2 . + B W . . . .
+3 W W W W W W . .
+4 . W B B B B + .
+5 . W B B B B + .
+6 . W B + + + + .
+7 . + + + . . . .
+8 . . . . . . . .
+
+g4
+turn: black
+depth: 10, score: 52
+time: 0.662125s
+  A B C D E F G H
+1 . B B B . . . .
+2 . . B W . . . .
+3 W W W W W W . .
+4 . W W W W W W .
+5 + W B B B B . .
+6 . W B . . . . .
+7 . . . . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B . . . .
+2 . + B W . . . .
+3 W W W W W W . .
+4 . W W W W W W .
+5 B B B B B B . .
+6 + W B + + + + .
+7 . + + . . . . .
+8 . . . . . . . .
+
+c7
+turn: black
+depth: 9, score: 83
+time: 0.746757s
+  A B C D E F G H
+1 . B B B + . . .
+2 . . B W . . . .
+3 W W W W W W . .
+4 . W W W W W W .
+5 B B W B B B . .
+6 . W W . . . . .
+7 . . W . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B . . .
+2 . + B B . . . .
+3 W W B W W W . .
+4 + B W W W W W .
+5 B B W B B B + .
+6 + W W + + + + .
+7 . . W . . . . .
+8 . . . . . . . .
+
+a4
+turn: black
+depth: 10, score: 116
+time: 0.551304s
+  A B C D E F G H
+1 . B B B B . . .
+2 + . B B . . . .
+3 W W B W W W . .
+4 W W W W W W W .
+5 B W W B B B . .
+6 . W W . . . . .
+7 . . W . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B . . .
+2 B + B B . . . .
+3 B B B W W W . .
+4 B W B W W W W .
+5 B W W B B B + .
+6 . W W + + + + .
+7 . . W . . . . .
+8 . . . . . . . .
+
+g6
+turn: black
+depth: 10, score: 142
+time: 0.754395s
+  A B C D E F G H
+1 . B B B B . . .
+2 B . B B . . . .
+3 B B B W W W . .
+4 B W B W W W W .
+5 B W W B B W . .
+6 . W W + . . W .
+7 . . W . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B . . .
+2 B + B B . . . .
+3 B B B W W W . .
+4 B B B W W W W .
+5 B W B B B W . .
+6 . W W B + + W .
+7 . . W + . . . .
+8 . . . . . . . .
+
+f6
+turn: black
+depth: 10, score: 150
+time: 0.580447s
+  A B C D E F G H
+1 . B B B B . . .
+2 B . B B + . . .
+3 B B B W W W . .
+4 B B B W W W W .
+5 B W B B W W . .
+6 . W W B . W W .
+7 . . W . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B + . .
+2 B + B B B . . .
+3 B B B B W W . .
+4 B B B W W W W .
+5 B W B B W W . .
+6 . W W B + W W .
+7 . . W + . . . .
+8 . . . . . . . .
+
+f1
+turn: black
+depth: 10, score: 144
+time: 0.543542s
+  A B C D E F G H
+1 . B B B B W + .
+2 B . B B W . . .
+3 B B B W W W . .
+4 B B W W W W W .
+5 B W B B W W . .
+6 . W W B . W W .
+7 . . W . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B B B .
+2 B + B B W . . .
+3 B B B W W W . .
+4 B B W W W W W .
+5 B W B B W W . .
+6 . W W B + W W .
+7 . . W + . . . .
+8 . . . . . . . .
+
+b2
+turn: black
+depth: 10, score: 163
+time: 0.651629s
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W W . . .
+3 B W W W W W . .
+4 B W W W W W W .
+5 B W B B W W . .
+6 + W W B . W W .
+7 . . W . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B + . .
+3 B W W B W W . .
+4 B W B W W W W .
+5 B B B B W W . .
+6 B B B B + W W .
+7 + + W + + . . .
+8 . . . . . . . .
+
+f2
+turn: black
+depth: 10, score: 168
+time: 0.524547s
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W W W . .
+3 B W W B W W . .
+4 B W B W W W W .
+5 B B B B W W . .
+6 B B B B + W W .
+7 . . W . . . . .
+8 . . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B W . .
+3 B W W B B W . .
+4 B W B W B W W .
+5 B B B B B W . .
+6 B B B B B W W .
+7 + + W + + + . .
+8 . . . . . . . .
+
+a7
+turn: black
+depth: 10, score: 175
+time: 0.649169s
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B W . .
+3 B W W B B W . .
+4 B W B W B W W .
+5 B B W B B W . .
+6 B W B B B W W .
+7 W . W . . . . .
+8 + . . . . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B W . .
+3 B W W B B W . .
+4 B W B W B W W .
+5 B B W B B W . .
+6 B W B B B W W .
+7 B + W + + + . .
+8 B . . . . . . .
+
+b7
+turn: black
+depth: 10, score: 173
+time: 0.610826s
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B W . .
+3 B W W B B W . .
+4 B W B W W W W .
+5 B B W W B W . .
+6 B W W B B W W .
+7 B W W . . . . .
+8 B . . + . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B W . .
+3 B W W B B W . .
+4 B W B W W W W .
+5 B B W W B W . .
+6 B B W B B W W .
+7 B W B + + + . .
+8 B + + B . . . .
+
+b8
+turn: black
+depth: 10, score: 171
+time: 0.573302s
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B W . .
+3 B W W B B W + .
+4 B W B W W W W .
+5 B B W W W W . .
+6 B B W W B W W .
+7 B W W . . . . .
+8 B W . B . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B B + +
+3 B W W B B B B +
+4 B W B W W W W .
+5 B B W W W W . .
+6 B B W W B W W .
+7 B W W + + + . .
+8 B W . B . . . .
+
+h3
+turn: black
+depth: 11, score: 181
+time: 0.666230s
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B B . .
+3 B W W W W W W W
+4 B W B W W W W .
+5 B B W W W W . .
+6 B B W W B W W .
+7 B W W . . . . .
+8 B W + B . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B B + .
+3 B W W W W W W W
+4 B W B W W W W .
+5 B B B W W W . .
+6 B B B W B W W .
+7 B B B + + + . .
+8 B B B B . . . .
+
+d7
+turn: black
+depth: 14, score: 180
+time: 0.758489s
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B B . .
+3 B W W W W W W W
+4 B W B W W W W .
+5 B B B W W W + .
+6 B B B W W W W .
+7 B B B W . . . .
+8 B B B B . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W B B B + .
+3 B W W W B W W W
+4 B W B W W B W +
+5 B B B B B B B .
+6 B B B W W W W .
+7 B B B W . . . .
+8 B B B B . . . .
+
+g2
+turn: black
+depth: 17, score: 43114
+time: 0.956077s
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W W W W .
+3 B W W W B W W W
+4 B W B W W B W .
+5 B B B B B B B +
+6 B B B W W W W .
+7 B B B W . . . .
+8 B B B B . . . .
+
+turn: white
+  A B C D E F G H
+1 . B B B B B B .
+2 B W W W B W W .
+3 B W W W B B W W
+4 B W B W W B B +
+5 B B B B B B B B
+6 B B B W W W W +
+7 B B B W . . . .
+8 B B B B . . . .
+
+h4
+turn: black
+depth: 25, score: 43114
+time: 0.129189s
+  A B C D E F G H
+1 + B B B B B B .
+2 B W W W B W W .
+3 B W W W B B W W
+4 B W B W W W W W
+5 B B B B B B W B
+6 B B B W W W W .
+7 B B B W . . . .
+8 B B B B . . . .
+
+turn: white
+  A B C D E F G H
+1 B B B B B B B .
+2 B B W W B W W .
+3 B W B W B B W W
+4 B W B B W W W W
+5 B B B B B B W B
+6 B B B W W W W +
+7 B B B W . . . .
+8 B B B B . . . .
+
+h6
+turn: black
+depth: 25, score: 43114
+time: 0.030145s
+  A B C D E F G H
+1 B B B B B B B +
+2 B B W W B W W .
+3 B W B W B B W W
+4 B W B B W W W W
+5 B B B B B B W W
+6 B B B W W W W W
+7 B B B W . . . .
+8 B B B B . . . .
+
+turn: white
+  A B C D E F G H
+1 B B B B B B B B
+2 B B W W B W B +
+3 B W B W B B W W
+4 B W B B W W W W
+5 B B B B B B W W
+6 B B B W W W W W
+7 B B B W . . . .
+8 B B B B . . . .
+
+h2
+turn: black
+depth: 25, score: 43114
+time: 0.008566s
+  A B C D E F G H
+1 B B B B B B B B
+2 B B W W B W W W
+3 B W B W B B W W
+4 B W B B W W W W
+5 B B B B B B W W
+6 B B B W W W W W
+7 B B B W . . . .
+8 B B B B + . . .
+
+turn: black
+depth: 25, score: 43114
+time: 0.003054s
+  A B C D E F G H
+1 B B B B B B B B
+2 B B W W B W W W
+3 B W B W B B W W
+4 B W B B W W W W
+5 B B B B B B W W
+6 B B B W W W W W
+7 B B B B . . + .
+8 B B B B B . . .
+
+turn: white
+  A B C D E F G H
+1 B B B B B B B B
+2 B B W W B W B W
+3 B W B W B B B W
+4 B W B B W W B W
+5 B B B B B B B W
+6 B B B W W B B W
+7 B B B B + + B +
+8 B B B B B + . .
+
+e7
+turn: black
+depth: 25, score: 43114
+time: 0.001007s
+  A B C D E F G H
+1 B B B B B B B B
+2 B B W W B W B W
+3 B W B W B B B W
+4 B W B B W W B W
+5 B B B B B B W W
+6 B B B W W W B W
+7 B B B B W . B +
+8 B B B B B . . .
+
+turn: white
+  A B C D E F G H
+1 B B B B B B B B
+2 B B W W B W B B
+3 B W B W B B B B
+4 B W B B W W B B
+5 B B B B B B W B
+6 B B B W W W B B
+7 B B B B W . B B
+8 B B B B B . + +
+
+h8
+turn: black
+depth: 25, score: 43114
+time: 0.000901s
+  A B C D E F G H
+1 B B B B B B B B
+2 B B W W B W B B
+3 B W B W B B B B
+4 B W B B W W B B
+5 B B B B B B W B
+6 B B B W W W B B
+7 B B B B W . W B
+8 B B B B B + . W
+
+turn: white
+  A B C D E F G H
+1 B B B B B B B B
+2 B B W W B W B B
+3 B W B W B B B B
+4 B W B B W W B B
+5 B B B B B B W B
+6 B B B B W W B B
+7 B B B B B . B B
+8 B B B B B B + W
+
+g8
+turn: black
+depth: 25, score: 43114
+time: 0.000810s
+  A B C D E F G H
+1 B B B B B B B B
+2 B B W W B W B B
+3 B W B W B B B B
+4 B W B B W W B B
+5 B B B B B B W B
+6 B B B B W W W B
+7 B B B B B + W B
+8 B B B B B B W W
+
+game over
+result: BLACK 53 - 11 WHITE
+BLACK wins
